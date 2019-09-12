@@ -1,7 +1,7 @@
 from PyInquirer import style_from_dict, Token, prompt
 from PyInquirer import Validator, ValidationError
 from datetime import datetime
-from today.Pretty import Pretty
+from yesterday.Pretty import Pretty
 
 style = style_from_dict({
     Token.QuestionMark: '#E91E63 bold',

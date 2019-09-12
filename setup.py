@@ -6,7 +6,7 @@ from subprocess import call
 
 from setuptools import Command, find_packages, setup
 
-from today import __version__
+from yesterday import __version__
 
 this_dir = abspath(dirname(__file__))
 with open(join(this_dir, 'README.md'), encoding='utf-8') as file:
@@ -27,19 +27,19 @@ class RunTests(Command):
     def run(self):
         """Run all tests!"""
         print(__version__)
-        errno = call(['pytest', '--cov=today', '--cov-report=term-missing'])
+        errno = call(['pytest', '--cov=yesterday', '--cov-report=term-missing'])
         raise SystemExit(errno)
 
 
 setup(
-    name='today',
+    name='yesterday',
     version=__version__,
     description='A minimal jounaling system.',
     long_description=long_description,
-    url='https://github.com/RaiyanYahyaDev/today',
+    url='https://gitlab.com/raiyanyahya/yesterday',
     author='Raiyan Yahya',
     author_email='raiyanyahyadeveloper@gmail.com',
-    license='UNLICENSE',
+    license='GPL3',
     classifiers=[
         'Intended Audience :: Developers',
         'Topic :: Utilities',
@@ -64,7 +64,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'today=today.cli:main',
+            'yesterday=yesterday.cli:main',
         ],
     },
     cmdclass={'test': RunTests},
