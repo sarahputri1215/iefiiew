@@ -3,14 +3,6 @@ from PyInquirer import Validator, ValidationError
 from datetime import datetime
 from yesterday.Pretty import Pretty
 
-style = style_from_dict({
-    Token.QuestionMark: '#E91E63 bold',
-    Token.Selected: '#673AB7 bold',
-    Token.Instruction: '',  # default
-    Token.Answer: '#2196f3 bold',
-    Token.Question: '',
-})
-
 
 class NumberValidator(Validator):
     def validate(self, document):
@@ -22,12 +14,36 @@ class NumberValidator(Validator):
                 cursor_position=len(document.text))
 
 
+def print_errors(message):
+    print(Pretty.FAIL + message + Pretty.ENDC)
+
+
 def get_date_time():
     date_time = datetime.now().strftime("%d %B, %Y")
     return date_time
 
 
+style = style_from_dict({
+    Token.QuestionMark: '#E91E63 bold',
+    Token.Selected: '#673AB7 bold',
+    Token.Instruction: '',  # default
+    Token.Answer: '#2196f3 bold',
+    Token.Question: '',
+})
+
 questions = [
+    {
+        'type': 'input',
+        'name': 'phone',
+        'message': 'A brief description of yesterday : ',
+    },
+    {
+        'type': 'list',
+        'name': 'type',
+        'message': 'Describe yesterday ?',
+        'choices': ['The Best Day of my life !', 'A good day ', 'A normal day', 'Not a good day', 'A bad day'],
+        'filter': lambda val: val.lower()
+    },
     {
         'type': 'confirm',
         'name': 'stressed',
@@ -66,24 +82,13 @@ questions = [
         'filter': lambda val: int(val)
     },
     {
-        'type': 'input',
-        'name': 'phone',
-        'message': 'A brief description of yesterday : ',
-    },
-    {
         'type': 'list',
         'name': 'food',
         'message': 'what kind of food did you have yesterday ?',
         'choices': ['Mostly Carbs', 'Healthy', 'Oily Deep Fried', 'Not Sure'],
         'filter': lambda val: val.lower()
     },
-{
-        'type': 'list',
-        'name': 'yesterday_status',
-        'message': 'Describe yesterday ?',
-        'choices': ['The Best Day of my life !', 'A good day ', 'A normal day', 'Not a good day', 'A bad day'],
-        'filter': lambda val: val.lower()
-    },
+
     {
         'type': 'input',
         'name': 'media',
@@ -99,7 +104,7 @@ questions = [
     },
     {
         'type': 'confirm',
-        'name': 'log',
+        'name': 'confirm',
         'message': 'Save this log ? ',
         'default': True
     }
@@ -107,10 +112,13 @@ questions = [
 
 
 def start_log():
-    print(Pretty.UNDERLINE+Pretty.BOLD+Pretty.OKBLUE+('\n Entry Date {} \n'.format(get_date_time()))+Pretty.ENDC)
-    answers = prompt(questions, style=style)
-    if(answers['log']):
-        print(Pretty.UNDERLINE+Pretty.BOLD+Pretty.OKBLUE+"\n Entry Made !! Good Job !! \n"+Pretty.ENDC)
-        return answers
-    else:
-        return None
+    print(Pretty.BOLD + Pretty.OKBLUE + ('\n Entry Date {} \n '.format(get_date_time())) + Pretty.ENDC)
+    try:
+        entries = prompt(questions, style=style)
+        if entries['confirm']:
+            return entries
+        else:
+            return None
+    except Exception as exception:
+        print_errors("Error on questionnaire, please raise issue on repository")
+        raise Exception(str(exception))
